@@ -22,8 +22,6 @@ import {MockRouterProvider} from '../../mocks/router-provider.mock';
 import {CreateUserComponent} from './create-user.component';
 import {provide} from 'angular2/core';
 
-
-
 describe('When testing the CreateUserComponent', () => {
   
   var element: HTMLElement;
@@ -147,7 +145,6 @@ describe('When testing the CreateUserComponent', () => {
           dispatchEvent(usernameInput, 'input');
           dispatchEvent(emailInput, 'input');
           tick();
-          fixture.detectChanges();
           let data = element.querySelector('.submit-data');
           expect(data).toHaveText('Value to submit: barretodavid, barretollano@gmail.com')
         });
