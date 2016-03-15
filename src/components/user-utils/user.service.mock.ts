@@ -1,11 +1,15 @@
-import {SpyObject} from 'angular2/testing_internal';
+import {provide, Provider} from 'angular2/core';
 import {UserService} from './user.service';
+import * as Rx from 'rxjs/Rx';
 
 export class MockUserService {
+  
   public fakeResponse: any = null;
   
-  public getAllUsers() {
-    return this;
+  public getAllUsers(): Rx.Observable<any> {
+    let subject = new Rx.ReplaySubject()
+    subject.next(null);
+    return subject;
   }
   
   public subscribe(callback) {
@@ -15,22 +19,8 @@ export class MockUserService {
   public setResponse(response: any): void {
     this.fakeResponse = response;
   }
-}
-
-export class SpyUserService extends SpyObject {
-  public getAllUsers: Function;
-  public fakeResponse: any = null;
   
-  constructor() {
-    super(UserService);
-    this.getAllUsers = this.spy('getAllUsers').andReturn(this);
-  }
-  
-  public subscribe(callback) {
-    callback(this.fakeResponse);
-  }
-  
-  public setResponse(data: any): void {
-    this.fakeResponse = data;
+  public getProvider(): Provider {
+    return provide(UserService, {useValue: this});
   }
 }

@@ -9,16 +9,17 @@ import {
   ComponentFixture
 } from 'angular2/testing';
 
-import {MockRouterProvider} from '../../mocks/router-provider.mock';
-
+import {MockRouter} from '../../mocks/router.mock';
 import {UserListItemComponent} from './user-list-item.component';
 
 describe('When loading the UserListItem component', () => {
   
-  var mockRouterProvider = new MockRouterProvider();
+  let mockRouter = new MockRouter();
   
   beforeEachProviders(() => {
-    return [mockRouterProvider.getProviders()];
+    return [
+      mockRouter.getProvider()
+    ];
   });
   
   it('should render the id, username and email of the user', 
@@ -37,10 +38,11 @@ describe('When loading the UserListItem component', () => {
   
   it('should try to navigate to /UserDetail route when clicking a the button', 
     injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+      spyOn(mockRouter, 'navigate');
       return tcb.createAsync(UserListItemComponent).then((fixture: ComponentFixture) => {
         fixture.componentInstance.id = 15;
         fixture.componentInstance.viewDetails();
-        expect(mockRouterProvider.mockRouter.navigate).toHaveBeenCalledWith(['/UserDetail', {userId: 15}]);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['/UserDetail', {userId: 15}]);
       });
     })
   );

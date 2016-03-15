@@ -8,20 +8,25 @@ import {
   ComponentFixture
 } from 'angular2/testing';
 
-import {MockRouterProvider} from '../../mocks/router-provider.mock';
+import {MockRouter} from '../../mocks/router.mock';
+import {MockRouteParams} from '../../mocks/route-params.mock';
 
 import {UserDetailComponent} from './user-detail.component';
 
 describe('When loading the UserDetailComponent', () => {
-  var mockRouterProvider = new MockRouterProvider();
+  let mockRouter = new MockRouter();
+  let mockRouteParams = new MockRouteParams();
   
   beforeEachProviders(() => {
-    return [mockRouterProvider.getProviders()];
+    return [
+      mockRouter.getProvider(),
+      mockRouteParams.getProvider()
+    ];
   });
   
   it('should show the correct id of the user',
     injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-      mockRouterProvider.setRouteParam('userId', '30');
+      mockRouteParams.set('userId', '30');
       return tcb.createAsync(UserDetailComponent).then((fixture: ComponentFixture) => {    
         fixture.detectChanges();
         let compiled = fixture.debugElement.nativeElement;

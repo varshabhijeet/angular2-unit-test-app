@@ -73,7 +73,6 @@ describe('When testing the user service', () => {
         });
         
         service.createUser(mockUser);
-        // tick();
       }))
     );
     

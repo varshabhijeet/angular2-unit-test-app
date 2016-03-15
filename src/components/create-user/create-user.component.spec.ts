@@ -11,33 +11,33 @@ import {
   ComponentFixture
 } from 'angular2/testing';
 
-import { dispatchEvent } from 'angular2/testing_internal';
+import { dispatchEvent } from 'angular2/src/testing/utils';
 import { By } from 'angular2/platform/browser';
 import {FormBuilder} from 'angular2/common';
 
-import {UserService} from '../user-utils/user.service';
 import {MockUserService} from '../user-utils/user.service.mock';
-import {MockRouterProvider} from '../../mocks/router-provider.mock';
+import {MockRouter} from '../../mocks/router.mock';
 
 import {CreateUserComponent} from './create-user.component';
-import {provide} from 'angular2/core';
 
 describe('When testing the CreateUserComponent', () => {
   
-  var element: HTMLElement;
-  var form: HTMLFormElement;
-  var usernameInput: HTMLInputElement;
-  var emailInput: HTMLInputElement;
+  let element: HTMLElement;
+  let form: HTMLFormElement;
+  let usernameInput: HTMLInputElement;
+  let emailInput: HTMLInputElement;
   
-  var mockRouterProvider = new MockRouterProvider();
+  let mockRouter: MockRouter;
   
   beforeEachProviders(() => {
-    return [FormBuilder, mockRouterProvider.getProviders()]
+    mockRouter = new MockRouter();
+    return [FormBuilder, mockRouter.getProvider()];
   });
   
-  function createComponent(tcb: TestComponentBuilder): Promise<ComponentFixture> { 
+  function createComponent(tcb: TestComponentBuilder): Promise<ComponentFixture> {
+    let mockUserService = new MockUserService();
     return tcb
-      .overrideProviders(CreateUserComponent, [provide(UserService, {useClass: MockUserService})])
+      .overrideProviders(CreateUserComponent, [mockUserService.getProvider()])
       .createAsync(CreateUserComponent)
       .then((fixture: ComponentFixture) => {
         element = fixture.debugElement.nativeElement;
@@ -145,8 +145,9 @@ describe('When testing the CreateUserComponent', () => {
           dispatchEvent(usernameInput, 'input');
           dispatchEvent(emailInput, 'input');
           tick();
+          fixture.detectChanges();
           let data = element.querySelector('.submit-data');
-          expect(data).toHaveText('Value to submit: barretodavid, barretollano@gmail.com')
+          expect(data).toHaveText('Value to submit: barretodavid, barretollano@gmail.com');
         });
       }))
       
