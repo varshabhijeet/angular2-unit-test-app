@@ -8,12 +8,8 @@ export class MockUserService {
   
   public getAllUsers(): Rx.Observable<any> {
     let subject = new Rx.ReplaySubject()
-    subject.next(null);
+    subject.next(this.fakeResponse);
     return subject;
-  }
-  
-  public subscribe(callback) {
-    callback(this.fakeResponse);
   }
   
   public setResponse(response: any): void {
