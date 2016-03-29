@@ -3,23 +3,25 @@ module.exports = function(config) {
     
     frameworks: ['jasmine'],
     
-    files: [
-      { pattern: 'test.bundle.js', watched: false }
-    ],
+    files: ['./src/tests.entry.ts'],
 
     preprocessors: {
-      'test.bundle.js': ['webpack']
+      './src/**/*.ts': ['webpack']
     },
 
     webpack: {
+      entry: './src/tests.entry.ts',
+      verbose: true,
       resolve: {
         extensions: ['', '.ts', '.js', '.css'],
       },
       module: {
         loaders: [
-          { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/}
+          { test: /\.ts$/, loader: 'ts', exclude: /node_modules/}
         ]
-      }
+      },
+      stats: { colors: true, reasons: true },
+      debug: true
     },
 
     webpackServer: {
@@ -27,10 +29,13 @@ module.exports = function(config) {
     },
 
     reporters: ['spec'],
-    port: 9876,
+    
+    port: 9999,
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['PhantomJS'],
+    autoWatch: true,
+    browsers: ['Chrome'],
+    captureTimeout: 6000,
     singleRun: true
   })
 }
