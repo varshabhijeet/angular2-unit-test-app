@@ -1,22 +1,28 @@
-import {provide, Provider} from 'angular2/core';
-import {UserService} from './user.service';
-import * as Rx from 'rxjs/Rx';
+import {Observable, ReplaySubject} from 'rxjs';
+import {IUser} from './user.model';
 
 export class MockUserService {
   
   public fakeResponse: any = null;
   
-  public getAllUsers(): Rx.Observable<any> {
-    let subject = new Rx.ReplaySubject()
+  constructor() {
+      spyOn(this, 'getAllUsers').and.callThrough();
+      spyOn(this, 'createUser').and.callThrough();
+  }
+  
+  public getAllUsers(): Observable<any> {
+    let subject = new ReplaySubject();
+    subject.next(this.fakeResponse);
+    return subject;
+  }
+  
+  public createUser(user: IUser): Observable<any> {
+    let subject = new ReplaySubject();
     subject.next(this.fakeResponse);
     return subject;
   }
   
   public setResponse(response: any): void {
     this.fakeResponse = response;
-  }
-  
-  public getProvider(): Provider {
-    return provide(UserService, {useValue: this});
   }
 }

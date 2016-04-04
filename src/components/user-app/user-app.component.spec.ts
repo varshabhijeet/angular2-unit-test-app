@@ -21,6 +21,9 @@ import {provide} from 'angular2/core';
 import {RootRouter} from 'angular2/src/router/router';
 import {SpyLocation} from 'angular2/src/mock/location_mock';
 
+import {MockBackend} from 'angular2/http/testing';
+import {Http, BaseRequestOptions} from 'angular2/http';
+
 describe('When loading the UserAppComponent', () => {
    
   beforeEachProviders(() => {  
@@ -28,7 +31,12 @@ describe('When loading the UserAppComponent', () => {
       RouteRegistry,
       provide(Router, {useClass: RootRouter}),
       provide(ROUTER_PRIMARY_COMPONENT, {useValue: UserAppComponent}),
-      provide(Location, {useClass: SpyLocation})
+      provide(Location, {useClass: SpyLocation}),
+      MockBackend,
+      BaseRequestOptions,
+      provide(Http, {useFactory: (backend: MockBackend, defaultOptions: BaseRequestOptions) => {
+        return new Http(backend, defaultOptions);
+      }, deps: [MockBackend, BaseRequestOptions]})
     ];
   });
   

@@ -12,9 +12,12 @@ import {
 } from 'angular2/testing';
 
 import {Component, Input} from 'angular2/core';
+import {UserService} from '../user-utils/user.service';
 import {MockUserService} from '../user-utils/user.service.mock';
-import {UserListComponent} from './user-list.component';
 import {UserListItemComponent} from '../user-list-item/user-list-item.component';
+import {provide} from 'angular2/core';
+
+import {UserListComponent} from './user-list.component';
 
 @Component({
   selector: 'user-list-item',
@@ -42,7 +45,7 @@ describe('When starting the user app component', () => {
       
       tcb
         .overrideDirective(UserListComponent, UserListItemComponent, MockUserListItemComponent)
-        .overrideProviders(UserListComponent, [mockUserService.getProvider()])
+        .overrideProviders(UserListComponent, [provide(UserService, {useValue: mockUserService})])
         .createAsync(UserListComponent)
         .then((fixture: ComponentFixture) => {
           fixture.detectChanges();
@@ -62,11 +65,10 @@ describe('When starting the user app component', () => {
         username: 'thejohn',
         email: 'pepe@gmail.com'
       }]);
-      spyOn(mockUserService, 'getAllUsers');
       
       tcb
         .overrideDirective(UserListComponent, UserListItemComponent, MockUserListItemComponent)
-        .overrideProviders(UserListComponent, [mockUserService.getProvider()])
+        .overrideProviders(UserListComponent, [provide(UserService, {useValue: mockUserService})])
         .createAsync(UserListComponent)
         .then((fixture: ComponentFixture) => {
           fixture.detectChanges();

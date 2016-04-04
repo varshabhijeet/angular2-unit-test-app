@@ -11,14 +11,19 @@ import {
   ComponentFixture
 } from 'angular2/testing';
 
-import { dispatchEvent } from 'angular2/src/testing/utils';
-import { By } from 'angular2/platform/browser';
+import {dispatchEvent} from 'angular2/src/testing/utils';
+import {By} from 'angular2/platform/browser';
 import {FormBuilder} from 'angular2/common';
 
-import {MockUserService} from '../user-utils/user.service.mock';
+import {Router} from 'angular2/router';
+import {UserService} from '../user-utils/user.service';
+
 import {MockRouter} from '../../mocks/router.mock';
+import {MockUserService} from '../user-utils/user.service.mock';
+import {provide} from "angular2/core";
 
 import {CreateUserComponent} from './create-user.component';
+
 
 describe('When testing the CreateUserComponent', () => {
   
@@ -27,17 +32,16 @@ describe('When testing the CreateUserComponent', () => {
   let usernameInput: HTMLInputElement;
   let emailInput: HTMLInputElement;
   
-  let mockRouter: MockRouter;
-  
   beforeEachProviders(() => {
-    mockRouter = new MockRouter();
-    return [FormBuilder, mockRouter.getProvider()];
+    return [
+      FormBuilder,
+      provide(Router, {useClass: MockRouter})
+    ];
   });
   
   function createComponent(tcb: TestComponentBuilder): Promise<ComponentFixture> {
-    let mockUserService = new MockUserService();
     return tcb
-      .overrideProviders(CreateUserComponent, [mockUserService.getProvider()])
+      .overrideProviders(CreateUserComponent, [provide(UserService, {useClass: MockUserService})])
       .createAsync(CreateUserComponent)
       .then((fixture: ComponentFixture) => {
         element = fixture.debugElement.nativeElement;

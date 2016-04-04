@@ -9,21 +9,23 @@ import {
   ComponentFixture
 } from 'angular2/testing';
 
+import {Router} from 'angular2/router';
+
 import {MockRouter} from '../../mocks/router.mock';
+import {provide} from "angular2/core";
+
 import {UserListItemComponent} from './user-list-item.component';
 
 describe('When loading the UserListItem component', () => {
   
-  let mockRouter = new MockRouter();
-  
   beforeEachProviders(() => {
     return [
-      mockRouter.getProvider()
+      provide(Router, {useClass: MockRouter})
     ];
   });
   
   it('should render the id, username and email of the user', 
-    injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+    injectAsync([TestComponentBuilder, Router], (tcb: TestComponentBuilder, mockRouter: MockRouter) => {
       return tcb.createAsync(UserListItemComponent).then((fixture: ComponentFixture) => {
         fixture.componentInstance.id = '50';
         fixture.componentInstance.username = 'barretodavid';
@@ -37,8 +39,7 @@ describe('When loading the UserListItem component', () => {
   );
   
   it('should try to navigate to /UserDetail route when clicking a the button', 
-    injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-      spyOn(mockRouter, 'navigate');
+    injectAsync([TestComponentBuilder, Router], (tcb: TestComponentBuilder, mockRouter: MockRouter) => {
       return tcb.createAsync(UserListItemComponent).then((fixture: ComponentFixture) => {
         fixture.componentInstance.id = 15;
         fixture.componentInstance.viewDetails();
