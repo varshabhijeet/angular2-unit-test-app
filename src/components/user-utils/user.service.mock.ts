@@ -10,13 +10,13 @@ export class MockUserService {
       spyOn(this, 'createUser').and.callThrough();
   }
   
-  public getAllUsers(): Observable<any> {
+  public getAllUsers(): Observable<IUser[]> {
     let subject = new ReplaySubject();
     subject.next(this.fakeResponse);
     return subject;
   }
   
-  public createUser(user: IUser): Observable<any> {
+  public createUser(user: IUser): Observable<IUser> {
     let subject = new ReplaySubject();
     subject.next(this.fakeResponse);
     return subject;

@@ -58,13 +58,8 @@ describe('When starting the user app component', () => {
   
   it('should call the spy method', 
     inject([TestComponentBuilder], fakeAsync((tcb: TestComponentBuilder) => {
-    
+
       let mockUserService = new MockUserService();
-      mockUserService.setResponse([{
-        name: 'John',
-        username: 'thejohn',
-        email: 'pepe@gmail.com'
-      }]);
       
       tcb
         .overrideDirective(UserListComponent, UserListItemComponent, MockUserListItemComponent)
