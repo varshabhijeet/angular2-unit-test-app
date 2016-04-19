@@ -13,6 +13,8 @@ import {provide} from 'angular2/core';
 import {UserService} from './user.service';
 import {IUser} from './user.model';
 
+// import {MockHttp} from '../../mocks/http.mock';
+
 import {MockBackend, MockConnection} from 'angular2/http/testing';
 import {ResponseOptions, Response, Http, BaseRequestOptions, RequestMethod} from 'angular2/http';
 
@@ -43,6 +45,22 @@ describe('When testing the user service', () => {
     );  
     
   });
+  
+  // describe('and when trying to get all the user', () => {
+
+  //   it('should try to make a GET request to the proper URL', () => {
+  //     class Http {
+        
+  //     }
+      
+  //     const http = new Http();
+  //     spyOn(http, 'get').and.returnValue(null);
+  //     spyOn(http, 'post').and.returnValue(null);
+      
+  //     let service = new UserService(http);   
+  //   });  
+    
+  // });
   
   describe('and when trying to create a new user', () => {
     

@@ -25,12 +25,30 @@ import {provide} from "angular2/core";
 import {CreateUserComponent} from './create-user.component';
 
 
+interface IElements {
+  element: HTMLElement;
+  form: HTMLFormElement;
+  usernameInput: HTMLInputElement;
+  emailInput: HTMLInputElement;
+  fixture: ComponentFixture;
+}
+
+function createComponent(tcb: TestComponentBuilder): Promise<IElements> {
+  return tcb
+    .overrideProviders(CreateUserComponent, [provide(UserService, {useClass: MockUserService})])
+    .createAsync(CreateUserComponent)
+    .then((fixture: ComponentFixture) => {
+      let element = fixture.debugElement.nativeElement;
+      let form = fixture.debugElement.query(By.css('form')).nativeElement;
+      let usernameInput = fixture.debugElement.query(By.css('#username')).nativeElement;
+      let emailInput = fixture.debugElement.query(By.css('#email')).nativeElement;
+      fixture.detectChanges();
+      return {element, form, usernameInput, emailInput, fixture};
+    });
+}
+
+
 describe('When testing the CreateUserComponent', () => {
-  
-  let element: HTMLElement;
-  let form: HTMLFormElement;
-  let usernameInput: HTMLInputElement;
-  let emailInput: HTMLInputElement;
   
   beforeEachProviders(() => {
     return [
@@ -38,33 +56,20 @@ describe('When testing the CreateUserComponent', () => {
       provide(Router, {useClass: MockRouter})
     ];
   });
-  
-  function createComponent(tcb: TestComponentBuilder): Promise<ComponentFixture> {
-    return tcb
-      .overrideProviders(CreateUserComponent, [provide(UserService, {useClass: MockUserService})])
-      .createAsync(CreateUserComponent)
-      .then((fixture: ComponentFixture) => {
-        element = fixture.debugElement.nativeElement;
-        form = fixture.debugElement.query(By.css('form')).nativeElement;
-        usernameInput = fixture.debugElement.query(By.css('#username')).nativeElement;
-        emailInput = fixture.debugElement.query(By.css('#email')).nativeElement;
-        fixture.detectChanges();
-        return fixture;
-      });
-  }
-  
+    
   describe('When leaving the username field blank', () => {
     
     it('should show the "required" error message in the template', 
       injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-        return createComponent(tcb).then((fixture: ComponentFixture) => {
-          usernameInput.value = '';
-          dispatchEvent(usernameInput, 'input');
-          fixture.detectChanges();
-          let errors = element.querySelectorAll('.username .errors li');
-          let errorMessage: string = errors[0].textContent.trim();
-          expect(errors.length).toBe(1);
-          expect(errorMessage).toBe('The username is required');
+        return createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            usernameInput.value = '';
+            dispatchEvent(usernameInput, 'input');
+            fixture.detectChanges();
+            let errors = element.querySelectorAll('.username .errors li');
+            let errorMessage: string = errors[0].textContent.trim();
+            expect(errors.length).toBe(1);
+            expect(errorMessage).toBe('The username is required');
         });
       })
     );
@@ -75,15 +80,16 @@ describe('When testing the CreateUserComponent', () => {
     
     it('should show the "min length" error message in the template', 
       injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-        return createComponent(tcb).then((fixture: ComponentFixture) => {
-          usernameInput.value = 'bar';
-          dispatchEvent(usernameInput, 'input');
-          fixture.detectChanges();
-          let errors = element.querySelectorAll('.username .errors li');
-          let errorMessage: string = errors[0].textContent.trim();
-          expect(errors.length).toBe(1);
-          expect(errorMessage).toBe('The username requires at least 4 characters');
-        });
+        return createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            usernameInput.value = 'bar';
+            dispatchEvent(usernameInput, 'input');
+            fixture.detectChanges();
+            let errors = element.querySelectorAll('.username .errors li');
+            let errorMessage: string = errors[0].textContent.trim();
+            expect(errors.length).toBe(1);
+            expect(errorMessage).toBe('The username requires at least 4 characters');
+          });
       })
     );
     
@@ -93,13 +99,14 @@ describe('When testing the CreateUserComponent', () => {
     
     it('should not show any error message', 
       injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-        return createComponent(tcb).then((fixture: ComponentFixture) => {
-          usernameInput.value = 'barretodavid';
-          dispatchEvent(usernameInput, 'input');
-          fixture.detectChanges();
-          let errors = element.querySelectorAll('.username .errors li');
-          expect(errors.length).toBe(0);
-        });
+        return createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            usernameInput.value = 'barretodavid';
+            dispatchEvent(usernameInput, 'input');
+            fixture.detectChanges();
+            let errors = element.querySelectorAll('.username .errors li');
+            expect(errors.length).toBe(0);
+          });
       })
     );
     
@@ -109,15 +116,16 @@ describe('When testing the CreateUserComponent', () => {
     
     it('should show the "required" error message in the template', 
       injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-        return createComponent(tcb).then((fixture: ComponentFixture) => {
-          emailInput.value = '';
-          dispatchEvent(emailInput, 'input');
-          fixture.detectChanges();
-          let errors = element.querySelectorAll('.email .errors li');
-          let errorMessage: string = errors[0].textContent.trim();
-          expect(errors.length).toBe(1);
-          expect(errorMessage).toBe('The email is required');
-        });
+        return createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            emailInput.value = '';
+            dispatchEvent(emailInput, 'input');
+            fixture.detectChanges();
+            let errors = element.querySelectorAll('.email .errors li');
+            let errorMessage: string = errors[0].textContent.trim();
+            expect(errors.length).toBe(1);
+            expect(errorMessage).toBe('The email is required');
+          });
       })
     );
     
@@ -127,13 +135,14 @@ describe('When testing the CreateUserComponent', () => {
     
     it('should not show any error message', 
       injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
-        return createComponent(tcb).then((fixture: ComponentFixture) => {
-          emailInput.value = 'barretollano@gmail.com';
-          dispatchEvent(emailInput, 'input');
-          fixture.detectChanges();
-          let errors = element.querySelectorAll('.email .errors li');
-          expect(errors.length).toBe(0);
-        });
+        return createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            emailInput.value = 'barretollano@gmail.com';
+            dispatchEvent(emailInput, 'input');
+            fixture.detectChanges();
+            let errors = element.querySelectorAll('.email .errors li');
+            expect(errors.length).toBe(0);
+          });
       })
     );
     
@@ -143,16 +152,17 @@ describe('When testing the CreateUserComponent', () => {
     
     it('should show the value to be submitted', 
       inject([TestComponentBuilder], fakeAsync((tcb: TestComponentBuilder) => {
-        createComponent(tcb).then((fixture: ComponentFixture) => {
-          usernameInput.value = 'barretodavid';
-          emailInput.value = 'barretollano@gmail.com';
-          dispatchEvent(usernameInput, 'input');
-          dispatchEvent(emailInput, 'input');
-          tick();
-          fixture.detectChanges();
-          let data = element.querySelector('.submit-data');
-          expect(data).toHaveText('Value to submit: barretodavid, barretollano@gmail.com');
-        });
+        createComponent(tcb)
+          .then(({element, form, usernameInput, emailInput, fixture}) => {
+            usernameInput.value = 'barretodavid';
+            emailInput.value = 'barretollano@gmail.com';
+            dispatchEvent(usernameInput, 'input');
+            dispatchEvent(emailInput, 'input');
+            tick();
+            fixture.detectChanges();
+            let data = element.querySelector('.submit-data');
+            expect(data).toHaveText('Value to submit: barretodavid, barretollano@gmail.com');
+          });
       }))
       
     );
