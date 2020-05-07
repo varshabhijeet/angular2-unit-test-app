@@ -21,6 +21,7 @@
     "karma-jasmine": "^0.3.7",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-chrome-launcher": "~0.2.3",
+    "karma-phantomjs-launcher": "*"
     "karma-spec-reporter": "0.0.24",
     "karma-webpack": "^1.7.0",
     "path": "^0.12.7",
