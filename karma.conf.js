@@ -31,6 +31,13 @@ module.exports = function(config) {
     reporters: ['spec'],
     
     port: 9999,
+     plugins : [
+      'karma-junit-reporter',
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-chrome-launcher'
+      //'karma-htmlfile-reporter'
+    ],
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
